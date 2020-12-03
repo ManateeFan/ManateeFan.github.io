@@ -36,7 +36,7 @@
 <meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/o_201026064605chp7-ELF.png">
 <meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/o_201026064610chp7-process.png">
 <meta property="article:published_time" content="2020-10-23T02:53:45.000Z">
-<meta property="article:modified_time" content="2020-12-03T06:59:07.721Z">
+<meta property="article:modified_time" content="2020-12-03T11:13:50.850Z">
 <meta property="article:author" content="刘一凡">
 <meta property="article:tag" content="操作系统">
 <meta property="article:tag" content="基础">
@@ -279,7 +279,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2020-12-03 14:59:07" itemprop="dateModified" datetime="2020-12-03T14:59:07+08:00">2020-12-03</time>
+        <time title="修改时间：2020-12-03 19:13:50" itemprop="dateModified" datetime="2020-12-03T19:13:50+08:00">2020-12-03</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -313,10 +313,10 @@
 <a id="more"></a>
 
 <p><strong>编译器驱动程序</strong>包括了预处理器、编译器、汇编器和链接器。它将ASCII码源文件翻译成可执行目标文件。</p>
-<p><img src="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/t_201026064547chp7-compiler.png" alt="image-20201026113334026"></p>
-<p><img src="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/o_201026064554chp7-compiler_dirver.png" alt="image-20201026112626112"></p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/t_201026064547chp7-compiler.png"></p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/o_201026064554chp7-compiler_dirver.png"></p>
 <p>预处理器cpp将main.c翻译成一个ASCII码的中间文件main.i。</p>
-<p><img src="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/t_201026064600chp7-cpp-main.i.png?a=1603694830681" alt="image-20201026113708465"></p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/t_201026064600chp7-cpp-main.i.png?a=1603694830681"></p>
 <p>我们打开main.i文件看看</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"># <span class="number">1</span> <span class="string">&quot;main.c.test&quot;</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;&lt;built-in&gt;&quot;</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;&lt;command-line&gt;&quot;</span></span><br><span class="line"># <span class="number">31</span> <span class="string">&quot;&lt;command-line&gt;&quot;</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;/usr/include/stdc-predef.h&quot;</span> <span class="number">1</span> <span class="number">3</span> <span class="number">4</span></span><br><span class="line"># <span class="number">32</span> <span class="string">&quot;&lt;command-line&gt;&quot;</span> <span class="number">2</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;main.c.test&quot;</span></span><br><span class="line">......<span class="comment">// 略</span></span><br><span class="line"># <span class="number">216</span> <span class="string">&quot;/usr/lib/gcc/x86_64-linux-gnu/7/include/stddef.h&quot;</span> <span class="number">3</span> <span class="number">4</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="keyword">size_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">signed</span> <span class="keyword">char</span> <span class="keyword">__int8_t</span>;</span><br><span class="line">......<span class="comment">// 略</span></span><br><span class="line"># <span class="number">2</span> <span class="string">&quot;main.c.test&quot;</span> <span class="number">2</span></span><br><span class="line"># <span class="number">2</span> <span class="string">&quot;main.c.test&quot;</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sum</span><span class="params">(<span class="keyword">int</span>* a, <span class="keyword">int</span> n)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> <span class="built_in">array</span>[<span class="number">2</span>] = &#123;<span class="number">1</span>, <span class="number">2</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"> <span class="keyword">int</span> val = sum(<span class="built_in">array</span>, <span class="number">2</span>);</span><br><span class="line"> <span class="keyword">return</span> val;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -334,7 +334,7 @@
 <li>共享目标文件：特殊可重定位目标文件，可在加载时或运行时被动态加载到内存并链接。</li>
 </ul>
 <p>各个系统目标文件格式不同，x86-64Linux和Unix使用的格式为<strong>ELF</strong>。</p>
-<p><img src="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/o_201026064605chp7-ELF.png" alt="image-20201026125433241"></p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/o_201026064605chp7-ELF.png"></p>
 <ul>
 <li>.text：代码</li>
 <li>.rodata：只读数据</li>
@@ -378,7 +378,7 @@
 <li>重定位节中的符号引用。修改代码和数据节中对每个符号的引用，使之指向正确的运行时地址。</li>
 </ul>
 <p>重定位完后，形成可执行目标文件，它连续的片被映射到连续的内存段。</p>
-<p><img src="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/o_201026064610chp7-process.png" alt="image-20201026141732922"></p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/o_201026064610chp7-process.png"></p>
 <p>加载器通过目标文件头部表中的信息将进程虚拟地址空间中的页映射到可执行文件中页大小的片，新的代码段和数据段被初始化为可执行文件的相应段，然后加载器跳转到_start地址，它最终调用<code>main</code>函数，除了头部表的一些信息，加载过程中没有任何从磁盘到内存的数据复制。知道CPU引用一个被映射的虚拟页时才会复制相应页面到内存。</p>
 <h3 id="动态链接共享库"><a href="#动态链接共享库" class="headerlink" title="动态链接共享库"></a>动态链接共享库</h3><p>静态库的一些代码会被复制到每个引用它的运行的进程中，而动态库不同，它在运行或加载时，可以通过动态链接器加载到进程的任意内存地址，在Linux中以.so结尾的文件表示。所有引用一个.so动态库的可执行目标文件共享这个.so文件中的代码和数据。静态库则是每次链接都需要复制代码和数据。共享库的.text节可以被多个运行的进程共享</p>
 
