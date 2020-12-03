@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="看了c++并发编程实战的内存模型部分后，一直对memory_order不太懂，今天在知乎发现了百度的brpc，恰好有关于原子操作的文档，感觉解释的很好。为了加深理解，再次总结一遍。 在多核编程中，我们使用锁来避免多个线程修改同一个数据时产生的竞争条件。但是，锁会消耗系统资源，当锁成为性能瓶颈的时候，就需要使用另一种方法——原子指令。c++11中引入了原子类型atomic。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="关于C++11memory order的理解">
+<meta property="og:url" content="http://example.com/2020/08/23/%E5%85%B3%E4%BA%8EC-11memory-order%E7%9A%84%E7%90%86%E8%A7%A3/index.html">
+<meta property="og:site_name" content="Manatee">
+<meta property="og:description" content="看了c++并发编程实战的内存模型部分后，一直对memory_order不太懂，今天在知乎发现了百度的brpc，恰好有关于原子操作的文档，感觉解释的很好。为了加深理解，再次总结一遍。 在多核编程中，我们使用锁来避免多个线程修改同一个数据时产生的竞争条件。但是，锁会消耗系统资源，当锁成为性能瓶颈的时候，就需要使用另一种方法——原子指令。c++11中引入了原子类型atomic。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-08-23T10:06:50.000Z">
+<meta property="article:modified_time" content="2020-12-03T06:58:51.351Z">
+<meta property="article:author" content="Liu Yifan">
+<meta property="article:tag" content="C++11">
+<meta property="article:tag" content="原子操作">
+<meta property="article:tag" content="多线程">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2020/08/23/%E5%85%B3%E4%BA%8EC-11memory-order%E7%9A%84%E7%90%86%E8%A7%A3/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>关于C++11memory order的理解 | Manatee</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Manatee</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Be Better</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-首页"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-关于"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-归档"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Liu Yifan"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Liu Yifan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ManateeFan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ManateeFan" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:0219lyf@gmail.com" title="E-Mail → mailto:0219lyf@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lyf-85-66-7" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;lyf-85-66-7" rel="noopener" target="_blank">知乎</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://leetcode-cn.com/u/lyf0219/" title="Leetcode → https:&#x2F;&#x2F;leetcode-cn.com&#x2F;u&#x2F;lyf0219&#x2F;" rel="noopener" target="_blank">Leetcode</a>
+      </span>
+  </div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/08/23/%E5%85%B3%E4%BA%8EC-11memory-order%E7%9A%84%E7%90%86%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Liu Yifan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Manatee">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          关于C++11memory order的理解
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-08-23 18:06:50" itemprop="dateCreated datePublished" datetime="2020-08-23T18:06:50+08:00">2020-08-23</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2020-12-03 14:58:51" itemprop="dateModified" datetime="2020-12-03T14:58:51+08:00">2020-12-03</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%B2%BE%E5%BD%A9%E6%96%87%E7%AB%A0/" itemprop="url" rel="index"><span itemprop="name">精彩文章</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>看了c++并发编程实战的内存模型部分后，一直对memory_order不太懂，今天在知乎发现了百度的<a target="_blank" rel="noopener" href="https://github.com/apache/incubator-brpc/edit/master/docs/cn/atomic_instructions.md">brpc</a>，恰好有关于原子操作的文档，感觉解释的很好。为了加深理解，再次总结一遍。</p>
+<p>在多核编程中，我们使用锁来避免多个线程修改同一个数据时产生的竞争条件。但是，锁会消耗系统资源，当锁成为性能瓶颈的时候，就需要使用另一种方法——原子指令。c++11中引入了原子类型<a target="_blank" rel="noopener" href="https://en.cppreference.com/w/cpp/atomic/atomic">atomic</a>。</p>
+<a id="more"></a>
+
+<table>
+<thead>
+<tr>
+<th>原子指令 (x均为std::atomic<int>)</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>x.load()</td>
+<td>返回x的值。</td>
+</tr>
+<tr>
+<td>x.store(n)</td>
+<td>把x设为n，什么都不返回。</td>
+</tr>
+<tr>
+<td>x.exchange(n)</td>
+<td>把x设为n，返回设定之前的值。</td>
+</tr>
+<tr>
+<td>x.compare_exchange_strong(expected_ref, desired)</td>
+<td>若x等于expected_ref，则设为desired，返回成功；否则把最新值写入expected_ref，返回失败。</td>
+</tr>
+<tr>
+<td>x.compare_exchange_weak(expected_ref, desired)</td>
+<td>相比compare_exchange_strong可能有<a target="_blank" rel="noopener" href="http://en.wikipedia.org/wiki/Spurious_wakeup">spurious wakeup</a>。</td>
+</tr>
+<tr>
+<td>x.fetch_add(n), x.fetch_sub(n)</td>
+<td>原子地做x += n, x-= n，返回修改之前的值。</td>
+</tr>
+</tbody></table>
+<p>但仅靠原子指令实现不了对资源的访问控制。这造成的原因是编译器和cpu实施了重排指令，导致读写顺序会发生变化，只要不存在依赖，代码中后面的指令可能会被放在前面，从而先执行它。cpu这么做是为了尽量塞满每个时钟周期，在单位时间内尽量执行更多的指令，从而提高吞吐率。</p>
+<p>下面看个例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// thread 1</span></span><br><span class="line"><span class="comment">// ready was initialized to false</span></span><br><span class="line">p.init();</span><br><span class="line">ready = <span class="literal">true</span>;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// thread 2</span></span><br><span class="line"><span class="keyword">if</span>(ready) &#123;</span><br><span class="line">  p.bar();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>线程2在ready为true的时候会访问p，对线程1来说，如果按照正常的执行顺序，那么p先被初始化，然后在将ready赋为true。但对多核的机器而言，情况可能有所变化：</p>
+<ul>
+<li>线程1中的ready = true可能会被cpu或编译器重排到p.init()的前面，从而优先执行ready = true这条指令。在线程2中，p.bar()中的一些代码可能被重排到if(ready)之前。</li>
+<li>即使没有重排，ready和p的值也会独立地同步到线程2所在核心的cache，线程2仍然可能在看到ready为true时看到未初始化的p。</li>
+</ul>
+<p>为了解决这个问题，cpu和编译器提供了memory fence，让用户可以声明访存指令的可见性关系，c++11总结为以下memory order：</p>
+<table>
+<thead>
+<tr>
+<th>memory order</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>memory_order_relaxed</td>
+<td>无fencing作用，cpu和编译器可以重排指令</td>
+</tr>
+<tr>
+<td>memory_order_consume</td>
+<td>后面依赖此原子变量的访存指令勿重排至此条指令之前</td>
+</tr>
+<tr>
+<td>memory_order_acquire</td>
+<td>后面访存指令勿重排至此条指令之前</td>
+</tr>
+<tr>
+<td>memory_order_release</td>
+<td>前面的访存指令勿排到此条指令之后。当此条指令的结果被同步到其他核的cache中时，保证前面的指令也已经被同步。</td>
+</tr>
+<tr>
+<td>memory_order_acq_rel</td>
+<td>acquare + release</td>
+</tr>
+<tr>
+<td>memory_order_seq_cst</td>
+<td>acq_rel + 所有使用seq_cst的指令有严格的全序关系</td>
+</tr>
+</tbody></table>
+<p>有了memoryorder，我们可以这么改上面的例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Thread1</span></span><br><span class="line"><span class="comment">// ready was initialized to false</span></span><br><span class="line">p.init();</span><br><span class="line">ready.store(<span class="literal">true</span>, <span class="built_in">std</span>::memory_order_release);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Thread2</span></span><br><span class="line"><span class="keyword">if</span> (ready.load(<span class="built_in">std</span>::memory_order_acquire)) &#123;</span><br><span class="line">    p.bar();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>线程2中的acquire和线程1的release配对，确保线程2在看到ready==true时能看到线程1 release之前所有的访存操作。</p>
+<p>注意，memory fence不等于可见性，即使线程2恰好在线程1在把ready设置为true后读取了ready也不意味着它能看到true，因为同步cache是有延时的。memory fence保证的是可见性的顺序：“假如我看到了a的最新值，那么我一定也得看到b的最新值”。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/C-11/" rel="tag"># C++11</a>
+              <a href="/tags/%E5%8E%9F%E5%AD%90%E6%93%8D%E4%BD%9C/" rel="tag"># 原子操作</a>
+              <a href="/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="tag"># 多线程</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/04/01/more%E5%91%BD%E4%BB%A4%E7%9A%84%E5%AE%9E%E7%8E%B0/" rel="prev" title="more命令的实现">
+                  <i class="fa fa-chevron-left"></i> more命令的实现
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/09/02/hello-world/" rel="next" title="Hello World">
+                  Hello World <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liu Yifan</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css">
+
+<script>
+NexT.utils.loadComments('#gitalk-container', () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '7567bbfe4a1d2eda089c',
+      clientSecret: 'a941072e79ee215cc8f0ea82b9823a13d4897923',
+      repo        : 'comment',
+      owner       : 'ManateeFan',
+      admin       : ['ManateeFan'],
+      id          : '59e14b947cce0be9d04bc1f0fe835fc0',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

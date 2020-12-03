@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="第七章 链接链接是将代码和数据片段组合成一个单一文件的过程，这个文件可以被load到内存并执行。 链接使得分离编译成为可能，将大型应用程序分成多个小的模块，当更改其中一个小模块时，只需要重新编译它，再链接，而不必去编译其他文件。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解计算机系统部分读书笔记">
+<meta property="og:url" content="http://example.com/2020/10/23/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E9%83%A8%E5%88%86%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Manatee">
+<meta property="og:description" content="第七章 链接链接是将代码和数据片段组合成一个单一文件的过程，这个文件可以被load到内存并执行。 链接使得分离编译成为可能，将大型应用程序分成多个小的模块，当更改其中一个小模块时，只需要重新编译它，再链接，而不必去编译其他文件。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/t_201026064547chp7-compiler.png">
+<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/o_201026064554chp7-compiler_dirver.png">
+<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/t_201026064600chp7-cpp-main.i.png?a=1603694830681">
+<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/o_201026064605chp7-ELF.png">
+<meta property="og:image" content="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/o_201026064610chp7-process.png">
+<meta property="article:published_time" content="2020-10-23T02:53:45.000Z">
+<meta property="article:modified_time" content="2020-12-03T06:59:07.721Z">
+<meta property="article:author" content="Liu Yifan">
+<meta property="article:tag" content="操作系统">
+<meta property="article:tag" content="基础">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/t_201026064547chp7-compiler.png">
+
+
+<link rel="canonical" href="http://example.com/2020/10/23/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E9%83%A8%E5%88%86%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>深入理解计算机系统部分读书笔记 | Manatee</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Manatee</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Be Better</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-首页"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-关于"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-归档"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%83%E7%AB%A0-%E9%93%BE%E6%8E%A5"><span class="nav-number">1.</span> <span class="nav-text">第七章 链接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87%E6%96%87%E4%BB%B6"><span class="nav-number">1.1.</span> <span class="nav-text">目标文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5%E5%99%A8%E8%A7%A3%E5%86%B3%E5%A4%9A%E9%87%8D%E5%AE%9A%E4%B9%89%E7%9A%84%E5%85%A8%E5%B1%80%E7%AC%A6%E5%8F%B7"><span class="nav-number">1.2.</span> <span class="nav-text">链接器解决多重定义的全局符号</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%93%BE%E6%8E%A5%E9%9D%99%E6%80%81%E5%BA%93"><span class="nav-number">1.3.</span> <span class="nav-text">链接静态库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E5%AE%9A%E4%BD%8D"><span class="nav-number">1.4.</span> <span class="nav-text">重定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%85%B1%E4%BA%AB%E5%BA%93"><span class="nav-number">1.5.</span> <span class="nav-text">动态链接共享库</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Liu Yifan"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Liu Yifan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ManateeFan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ManateeFan" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:0219lyf@gmail.com" title="E-Mail → mailto:0219lyf@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lyf-85-66-7" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;lyf-85-66-7" rel="noopener" target="_blank">知乎</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://leetcode-cn.com/u/lyf0219/" title="Leetcode → https:&#x2F;&#x2F;leetcode-cn.com&#x2F;u&#x2F;lyf0219&#x2F;" rel="noopener" target="_blank">Leetcode</a>
+      </span>
+  </div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2020/10/23/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E9%83%A8%E5%88%86%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Liu Yifan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Manatee">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          深入理解计算机系统部分读书笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-10-23 10:53:45" itemprop="dateCreated datePublished" datetime="2020-10-23T10:53:45+08:00">2020-10-23</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2020-12-03 14:59:07" itemprop="dateModified" datetime="2020-12-03T14:59:07+08:00">2020-12-03</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">读书笔记</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="第七章-链接"><a href="#第七章-链接" class="headerlink" title="第七章 链接"></a>第七章 链接</h2><p><strong>链接</strong>是将代码和数据片段组合成一个单一文件的过程，这个文件可以被load到内存并执行。</p>
+<p>链接使得分离编译成为可能，将大型应用程序分成多个小的模块，当更改其中一个小模块时，只需要重新编译它，再链接，而不必去编译其他文件。</p>
+<a id="more"></a>
+
+<p><strong>编译器驱动程序</strong>包括了预处理器、编译器、汇编器和链接器。它将ASCII码源文件翻译成可执行目标文件。</p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/t_201026064547chp7-compiler.png" alt="image-20201026113334026"></p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/o_201026064554chp7-compiler_dirver.png" alt="image-20201026112626112"></p>
+<p>预处理器cpp将main.c翻译成一个ASCII码的中间文件main.i。</p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/t_201026064600chp7-cpp-main.i.png?a=1603694830681" alt="image-20201026113708465"></p>
+<p>我们打开main.i文件看看</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"># <span class="number">1</span> <span class="string">&quot;main.c.test&quot;</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;&lt;built-in&gt;&quot;</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;&lt;command-line&gt;&quot;</span></span><br><span class="line"># <span class="number">31</span> <span class="string">&quot;&lt;command-line&gt;&quot;</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;/usr/include/stdc-predef.h&quot;</span> <span class="number">1</span> <span class="number">3</span> <span class="number">4</span></span><br><span class="line"># <span class="number">32</span> <span class="string">&quot;&lt;command-line&gt;&quot;</span> <span class="number">2</span></span><br><span class="line"># <span class="number">1</span> <span class="string">&quot;main.c.test&quot;</span></span><br><span class="line">......<span class="comment">// 略</span></span><br><span class="line"># <span class="number">216</span> <span class="string">&quot;/usr/lib/gcc/x86_64-linux-gnu/7/include/stddef.h&quot;</span> <span class="number">3</span> <span class="number">4</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">long</span> <span class="keyword">unsigned</span> <span class="keyword">int</span> <span class="keyword">size_t</span>;</span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">signed</span> <span class="keyword">char</span> <span class="keyword">__int8_t</span>;</span><br><span class="line">......<span class="comment">// 略</span></span><br><span class="line"># <span class="number">2</span> <span class="string">&quot;main.c.test&quot;</span> <span class="number">2</span></span><br><span class="line"># <span class="number">2</span> <span class="string">&quot;main.c.test&quot;</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">sum</span><span class="params">(<span class="keyword">int</span>* a, <span class="keyword">int</span> n)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> <span class="built_in">array</span>[<span class="number">2</span>] = &#123;<span class="number">1</span>, <span class="number">2</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"> <span class="keyword">int</span> val = sum(<span class="built_in">array</span>, <span class="number">2</span>);</span><br><span class="line"> <span class="keyword">return</span> val;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我在<code>main.c.test</code>里面include了<code>stdio.h</code>，经过cpp预处理器处理，可以看到它给源文件前面加了好多信息，还将<code>stdio.h</code>文件内容也添加了进来，生成了ASCII码的<code>main.i</code>文件。</p>
+<p>接下来我们将<code>main.i</code>文件用gcc编译器编译生成汇编语言文件<code>main.s</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">manatee@ManateeDesktop:~&#x2F;csapp$ gcc -S main.i</span><br><span class="line"></span><br><span class="line">        .file   &quot;main.c&quot;</span><br><span class="line">        .text</span><br><span class="line">        .globl  array</span><br><span class="line">        .data</span><br><span class="line">        .align 8</span><br><span class="line">        .type   array, @object</span><br><span class="line">        .size   array, 8</span><br><span class="line">array:</span><br><span class="line">        .long   1</span><br><span class="line">        .long   2</span><br><span class="line">        .text</span><br><span class="line">        .globl  main</span><br><span class="line">        .type   main, @function</span><br><span class="line">main:</span><br><span class="line">.LFB0:</span><br><span class="line">        .cfi_startproc</span><br><span class="line">        pushq   %rbp</span><br><span class="line">        .cfi_def_cfa_offset 16</span><br><span class="line">        .cfi_offset 6, -16</span><br><span class="line">        movq    %rsp, %rbp</span><br><span class="line">        .cfi_def_cfa_register 6</span><br><span class="line">        subq    $16, %rsp</span><br><span class="line">        movl    $2, %esi</span><br><span class="line">        leaq    array(%rip), %rdi</span><br><span class="line">        call    sum@PLT</span><br><span class="line">        movl    %eax, -4(%rbp)</span><br><span class="line">        movl    -4(%rbp), %eax</span><br><span class="line">        leave</span><br><span class="line">        .cfi_def_cfa 7, 8</span><br></pre></td></tr></table></figure>
+
+<p>接下来用as汇编器，将<code>main.s</code>翻译成<code>可重定位目标文件main.o</code>，再用ld连接器将目标文件组合形成可执行目标文件<code>prog</code>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">manatee@ManateeDesktop:~/csapp$ as -o main.o main.s</span><br><span class="line">manatee@ManateeDesktop:~/csapp$ ld -o prog main.o sum.o</span><br><span class="line">manatee@ManateeDesktop:~/csapp$ ./prog</span><br></pre></td></tr></table></figure>
+
+<p>shell调用操作系统中的loader函数，将可执行文件<code>prog</code>中的代码和数据复制到内存，然后执行它。</p>
+<h3 id="目标文件"><a href="#目标文件" class="headerlink" title="目标文件"></a>目标文件</h3><ul>
+<li>可重定位目标文件：包含二进制代码和数据，可在编译时与其他可重定位目标文件合并，形成一个可执行目标文件。</li>
+<li>可执行目标文件：包含二进制代码和数据，可被加载到内存执行。</li>
+<li>共享目标文件：特殊可重定位目标文件，可在加载时或运行时被动态加载到内存并链接。</li>
+</ul>
+<p>各个系统目标文件格式不同，x86-64Linux和Unix使用的格式为<strong>ELF</strong>。</p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/o_201026064605chp7-ELF.png" alt="image-20201026125433241"></p>
+<ul>
+<li>.text：代码</li>
+<li>.rodata：只读数据</li>
+<li>.data：初始化的全局和静态变量。<strong>局部变量在运行时被保存在栈中，并不在.data和.bss中</strong></li>
+<li>.bss：未初始化的全局和静态变量、被初始化为0的全局和静态变量。这在目标文件中不占用空间，在运行时才会给变量分配内存，初始值为0</li>
+<li>.symtab：符号表</li>
+</ul>
+<p>每个可重定位目标文件包含一个符号表，其中符号表包含了3中不同符号：</p>
+<ul>
+<li>被该文件定义和引用的全局符号：该文件中定义的全局函数和非静态全局变量</li>
+<li>引用其他目标文件的全局符号：其他文件中定义的全局函数和非静态全局变量</li>
+<li>该文件定义和引用的局部符号：<strong>static修饰的变量和函数，这些可被该目标文件使用，但不能在其他目标文件中被引用。</strong></li>
+</ul>
+<h3 id="链接器解决多重定义的全局符号"><a href="#链接器解决多重定义的全局符号" class="headerlink" title="链接器解决多重定义的全局符号"></a>链接器解决多重定义的全局符号</h3><p>如果多个目标文件定义了同名的全局符号，链接器如何区分？根据以下规则：</p>
+<p>函数和初始化的全局变量是强符号，未初始化的全局变量是弱符号。</p>
+<ol>
+<li>不能定义多个同名强符号</li>
+<li>一个强符号和多个弱符号同名，就选择强符号</li>
+<li>多个弱符号同名，就任选一个。</li>
+</ol>
+<p>举例来说：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* foo1.c */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">f</span><span class="params">()</span> </span>&#123;<span class="keyword">return</span> <span class="number">0</span>;&#125;</span><br><span class="line"><span class="comment">/* foo2.c */</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">f</span><span class="params">()</span> </span>&#123;<span class="keyword">return</span> <span class="number">0</span>;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于强符号f被定义了2次，编译和链接这两个文件时会出错。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* foo1.c */</span></span><br><span class="line"><span class="keyword">int</span> x = <span class="number">1119</span>;</span><br><span class="line"><span class="comment">/* foo2.c */</span></span><br><span class="line"><span class="keyword">int</span> x = <span class="number">1119</span>;</span><br></pre></td></tr></table></figure>
+
+<p>同理，上面也行不通。再看一个下面的例子：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* foo1.c */</span></span><br><span class="line"><span class="keyword">int</span> x = <span class="number">1119</span>;</span><br><span class="line"><span class="comment">/* foo2.c */</span></span><br><span class="line"><span class="keyword">int</span> x;</span><br></pre></td></tr></table></figure>
+
+<p>这次可以通过编译，链接器会选择<code>foo1.c</code>中的强符号x。</p>
+<h3 id="链接静态库"><a href="#链接静态库" class="headerlink" title="链接静态库"></a>链接静态库</h3><p>将相关的目标文件打包成一个单独的文件就形成了静态库，当链接器链接静态库时，它只复制应用程序引用的静态库中的模块，未引用的不会复制，这减少了可执行文件的占用空间。Linux静态库以.a结尾标识。</p>
+<p>下面用<code>addvec.c</code>和<code>multvec.c</code>创建了一个静态库<code>libvector.a</code>，并使用这个库：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">manatee@ManateeDesktop:~/csapp$ gcc -c addvec.c  multvec.c</span><br><span class="line">manatee@ManateeDesktop:~/csapp$ ar rcs libvector.a addvec.o multvec.o</span><br><span class="line">manatee@ManateeDesktop:~/csapp$ gcc -c main.c</span><br><span class="line">manatee@ManateeDesktop:~/csapp$ gcc -static -o prog main.o ./libvector.a</span><br><span class="line">manatee@ManateeDesktop:~/csapp$ ./prog</span><br><span class="line">z = [4 6]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* addvec.c */</span></span><br><span class="line"><span class="keyword">int</span> addcnt = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addvec</span><span class="params">(<span class="keyword">int</span>* x, <span class="keyword">int</span>* y, <span class="keyword">int</span>* z, <span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i;</span><br><span class="line">        addcnt++;</span><br><span class="line">        <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">                z[i] = x[i] + y[i];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* multvec.c */</span></span><br><span class="line"><span class="keyword">int</span> multcnt = <span class="number">0</span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">multvec</span><span class="params">(<span class="keyword">int</span>* x, <span class="keyword">int</span>* y, <span class="keyword">int</span>* z, <span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i;</span><br><span class="line">        multcnt++;</span><br><span class="line">        <span class="keyword">for</span>(i = <span class="number">0</span>; i &lt; n; i++)</span><br><span class="line">                z[i] = x[i] * y[i];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* vector.h */</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addvec</span><span class="params">(<span class="keyword">int</span>* x, <span class="keyword">int</span>* y, <span class="keyword">int</span>* z, <span class="keyword">int</span> n)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">multvec</span><span class="params">(<span class="keyword">int</span>* x, <span class="keyword">int</span>* y, <span class="keyword">int</span>* z, <span class="keyword">int</span> n)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* main.c */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&quot;vector.h&gt;</span></span></span><br><span class="line"><span class="meta"><span class="meta-string"></span></span></span><br><span class="line"><span class="meta"><span class="meta-string">int x[2] = &#123;1, 2&#125;;</span></span></span><br><span class="line"><span class="meta"><span class="meta-string">int y[2] = &#123;3, 4&#125;;</span></span></span><br><span class="line"><span class="meta"><span class="meta-string">int z[2];</span></span></span><br><span class="line"><span class="meta"><span class="meta-string"></span></span></span><br><span class="line"><span class="meta"><span class="meta-string">int main()</span></span></span><br><span class="line"><span class="meta"><span class="meta-string">&#123;</span></span></span><br><span class="line"><span class="meta"><span class="meta-string">        addvec(x, y, z, 2);</span></span></span><br><span class="line"><span class="meta"><span class="meta-string">        printf(&quot;</span>z = [%d %d]\n<span class="meta-string">&quot;, z[0], z[1]);</span></span></span><br><span class="line"><span class="meta"><span class="meta-string">        return 0;</span></span></span><br><span class="line"><span class="meta"><span class="meta-string">&#125;</span></span></span><br></pre></td></tr></table></figure>
+
+<p>链接器在链接时会从静态库<code>libvector.a</code>中复制引用的<code>addvec.o</code>模块到可执行文件，<code>printf.o</code>模块同理，程序并未使用<code>multvec.o</code>定义的符号，链接器就不会复制它。</p>
+<h3 id="重定位"><a href="#重定位" class="headerlink" title="重定位"></a>重定位</h3><p>链接器完成符号解析后就把每个模块中每个符号引用与它的定义相关联。</p>
+<ul>
+<li>重定位节和符号定义。将类型相同的节，如每个模块的.data节合并成为一个新的.data节。将运行时内存地址设置给新的节和每个符号。这样每条指令和全局变量就有唯一的运行时内存地址了。</li>
+<li>重定位节中的符号引用。修改代码和数据节中对每个符号的引用，使之指向正确的运行时地址。</li>
+</ul>
+<p>重定位完后，形成可执行目标文件，它连续的片被映射到连续的内存段。</p>
+<p><img src="https://images.cnblogs.com/cnblogs_com/vlyf/1870407/o_201026064610chp7-process.png" alt="image-20201026141732922"></p>
+<p>加载器通过目标文件头部表中的信息将进程虚拟地址空间中的页映射到可执行文件中页大小的片，新的代码段和数据段被初始化为可执行文件的相应段，然后加载器跳转到_start地址，它最终调用<code>main</code>函数，除了头部表的一些信息，加载过程中没有任何从磁盘到内存的数据复制。知道CPU引用一个被映射的虚拟页时才会复制相应页面到内存。</p>
+<h3 id="动态链接共享库"><a href="#动态链接共享库" class="headerlink" title="动态链接共享库"></a>动态链接共享库</h3><p>静态库的一些代码会被复制到每个引用它的运行的进程中，而动态库不同，它在运行或加载时，可以通过动态链接器加载到进程的任意内存地址，在Linux中以.so结尾的文件表示。所有引用一个.so动态库的可执行目标文件共享这个.so文件中的代码和数据。静态库则是每次链接都需要复制代码和数据。共享库的.text节可以被多个运行的进程共享</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" rel="tag"># 操作系统</a>
+              <a href="/tags/%E5%9F%BA%E7%A1%80/" rel="tag"># 基础</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/09/12/STL%E6%BA%90%E7%A0%81%E5%89%96%E6%9E%90%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/" rel="prev" title="STL源码剖析读书笔记">
+                  <i class="fa fa-chevron-left"></i> STL源码剖析读书笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/11/29/%E5%9B%BE%E4%B8%8E%E9%93%BE%E8%A1%A8%E7%9A%84%E6%B7%B1%E6%8B%B7%E8%B4%9D/" rel="next" title="图与链表的深拷贝">
+                  图与链表的深拷贝 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liu Yifan</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css">
+
+<script>
+NexT.utils.loadComments('#gitalk-container', () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '7567bbfe4a1d2eda089c',
+      clientSecret: 'a941072e79ee215cc8f0ea82b9823a13d4897923',
+      repo        : 'comment',
+      owner       : 'ManateeFan',
+      admin       : ['ManateeFan'],
+      id          : '17f2690539a8985537ec3c30c6ea820b',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

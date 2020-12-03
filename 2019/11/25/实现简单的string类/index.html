@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","images":"/images","scheme":"Pisces","version":"8.1.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="摘要实现了一个string类，包括基本的构造、赋值、判断、大小写等。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实现简单的string类">
+<meta property="og:url" content="http://example.com/2019/11/25/%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84string%E7%B1%BB/index.html">
+<meta property="og:site_name" content="Manatee">
+<meta property="og:description" content="摘要实现了一个string类，包括基本的构造、赋值、判断、大小写等。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-11-25T07:04:37.000Z">
+<meta property="article:modified_time" content="2020-12-03T07:05:52.614Z">
+<meta property="article:author" content="Liu Yifan">
+<meta property="article:tag" content="轮子">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="string">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2019/11/25/%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84string%E7%B1%BB/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>实现简单的string类 | Manatee</title>
+  
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">Manatee</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">Be Better</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-首页"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-关于"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-归档"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%91%98%E8%A6%81"><span class="nav-number">1.</span> <span class="nav-text">摘要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#String-API"><span class="nav-number">2.</span> <span class="nav-text">String API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Constructors"><span class="nav-number">2.1.</span> <span class="nav-text">Constructors</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Informational-Methods"><span class="nav-number">2.2.</span> <span class="nav-text">Informational Methods</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Case-Methods"><span class="nav-number">2.3.</span> <span class="nav-text">Case Methods</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Stream-Operators"><span class="nav-number">2.4.</span> <span class="nav-text">Stream Operators</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Accessor-Operators"><span class="nav-number">2.5.</span> <span class="nav-text">Accessor Operators</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Assignment-Operators"><span class="nav-number">2.6.</span> <span class="nav-text">Assignment Operators</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#String-Concatenation"><span class="nav-number">2.7.</span> <span class="nav-text">String Concatenation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Logical-Operators"><span class="nav-number">2.8.</span> <span class="nav-text">Logical Operators</span></a></li></ol></li></ol></div>
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Liu Yifan"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Liu Yifan</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">18</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/ManateeFan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;ManateeFan" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:0219lyf@gmail.com" title="E-Mail → mailto:0219lyf@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.zhihu.com/people/lyf-85-66-7" title="知乎 → https:&#x2F;&#x2F;www.zhihu.com&#x2F;people&#x2F;lyf-85-66-7" rel="noopener" target="_blank">知乎</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://leetcode-cn.com/u/lyf0219/" title="Leetcode → https:&#x2F;&#x2F;leetcode-cn.com&#x2F;u&#x2F;lyf0219&#x2F;" rel="noopener" target="_blank">Leetcode</a>
+      </span>
+  </div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2019/11/25/%E5%AE%9E%E7%8E%B0%E7%AE%80%E5%8D%95%E7%9A%84string%E7%B1%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Liu Yifan">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Manatee">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          实现简单的string类
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-11-25 15:04:37" itemprop="dateCreated datePublished" datetime="2019-11-25T15:04:37+08:00">2019-11-25</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2020-12-03 15:05:52" itemprop="dateModified" datetime="2020-12-03T15:05:52+08:00">2020-12-03</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E8%87%AA%E5%B7%B1%E9%80%A0%E8%BD%AE%E5%AD%90/" itemprop="url" rel="index"><span itemprop="name">自己造轮子</span></a>
+        </span>
+    </span>
+
+  
+    <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span id="busuanzi_value_page_pv"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>实现了一个string类，包括基本的构造、赋值、判断、大小写等。</p>
+<a id="more"></a>
+
+<h2 id="String-API"><a href="#String-API" class="headerlink" title="String API"></a>String API</h2><h3 id="Constructors"><a href="#Constructors" class="headerlink" title="Constructors"></a>Constructors</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">string();</span><br><span class="line">string(const char&amp; ch);</span><br><span class="line">string(const char* str);</span><br><span class="line">string(const string&amp; str);</span><br></pre></td></tr></table></figure>
+
+<h3 id="Informational-Methods"><a href="#Informational-Methods" class="headerlink" title="Informational Methods"></a>Informational Methods</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">unsigned Length() const;</span><br><span class="line">int Index(char c) const;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Case-Methods"><a href="#Case-Methods" class="headerlink" title="Case Methods"></a>Case Methods</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">void UpCase(unsigned first, unsigned last);</span><br><span class="line">void LowCase(unsigned first, unsigned last);</span><br></pre></td></tr></table></figure>
+
+<h3 id="Stream-Operators"><a href="#Stream-Operators" class="headerlink" title="Stream Operators"></a>Stream Operators</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">friend std::ostream&amp; operator&lt;&lt;(std::ostream&amp; os, const string&amp; str);</span><br><span class="line">friend std::istream&amp; operator&gt;&gt;(std::istream&amp; is, string&amp; str);</span><br></pre></td></tr></table></figure>
+
+<h3 id="Accessor-Operators"><a href="#Accessor-Operators" class="headerlink" title="Accessor Operators"></a>Accessor Operators</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">const char&amp; operator[](unsigned i) const;</span><br><span class="line">char&amp; operator[](unsigned i);</span><br></pre></td></tr></table></figure>
+
+<h3 id="Assignment-Operators"><a href="#Assignment-Operators" class="headerlink" title="Assignment Operators"></a>Assignment Operators</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String&amp;  operator&#x3D; (const String&amp;)</span><br><span class="line">String&amp; operator+&#x3D; (const String&amp;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="String-Concatenation"><a href="#String-Concatenation" class="headerlink" title="String Concatenation"></a>String Concatenation</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">friend string operator+(const string&amp; lhs, const string&amp; rhs);</span><br><span class="line">friend string operator+(const string&amp; lhs, const char* rhs);</span><br><span class="line">friend string operator+(const char* lhs, const string&amp; rhs);</span><br></pre></td></tr></table></figure>
+
+<h3 id="Logical-Operators"><a href="#Logical-Operators" class="headerlink" title="Logical Operators"></a>Logical Operators</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">friend bool operator&#x3D;&#x3D;(const string&amp; lhs, const string&amp; rhs);</span><br><span class="line">friend bool operator!&#x3D;(const string&amp; lhs, const string&amp; rhs);</span><br><span class="line">friend bool operator&lt;(const string&amp; lhs, const string&amp; rhs);</span><br><span class="line">friend bool operator&gt;(const string&amp; lhs, const string&amp; rhs);</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br></pre></td><td class="code"><pre><span class="line">#include &quot;string.h&quot;</span><br><span class="line"></span><br><span class="line">using namespace vlyf;</span><br><span class="line"></span><br><span class="line">inline</span><br><span class="line">vlyf::string::string()</span><br><span class="line">&#123;</span><br><span class="line">	length &#x3D; 0;</span><br><span class="line">	data &#x3D; new char[0];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">inline</span><br><span class="line">string::string(const char* str)</span><br><span class="line">&#123;</span><br><span class="line">	if (str)</span><br><span class="line">	&#123;</span><br><span class="line">		unsigned n &#x3D; 0;</span><br><span class="line">		while (str[n] !&#x3D; &#39;\0&#39;) n++;</span><br><span class="line">		data &#x3D; new char[n];</span><br><span class="line">		length &#x3D; n;</span><br><span class="line">		for (unsigned i &#x3D; 0; i &lt; n; i++)</span><br><span class="line">		&#123;</span><br><span class="line">			data[i] &#x3D; str[i];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	else</span><br><span class="line">	&#123;</span><br><span class="line">		length &#x3D; 0;</span><br><span class="line">		data &#x3D; new char[0];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">inline</span><br><span class="line">string::string(const string&amp; str)</span><br><span class="line">&#123;</span><br><span class="line">	unsigned len &#x3D; str.Length();</span><br><span class="line">	length &#x3D; len;</span><br><span class="line">	data &#x3D; new char[len];</span><br><span class="line">	for (unsigned i &#x3D; 0; i &lt; len; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		data[i] &#x3D; str[i];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">inline</span><br><span class="line">string::~string()</span><br><span class="line">&#123;</span><br><span class="line">	delete[]data;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">inline</span><br><span class="line">unsigned string::Length() const</span><br><span class="line">&#123;</span><br><span class="line">	return length;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int string::Index(char c) const</span><br><span class="line">&#123;</span><br><span class="line">	for (unsigned i &#x3D; 0; i &lt; Length(); i++)</span><br><span class="line">	&#123;</span><br><span class="line">		if (c &#x3D;&#x3D; data[i]) return i;</span><br><span class="line">	&#125;</span><br><span class="line">	return -1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">inline</span><br><span class="line">void string::UpCase(unsigned first, unsigned last)</span><br><span class="line">&#123;</span><br><span class="line">	while (first++ &lt; last)</span><br><span class="line">	&#123;</span><br><span class="line">		if (&#39;a&#39; &lt;&#x3D; data[first] &amp;&amp; data[first] &lt;&#x3D; &#39;z&#39;)</span><br><span class="line">			data[first] -&#x3D; (&#39;a&#39; - &#39;A&#39;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">inline</span><br><span class="line">void string::LowCase(unsigned first, unsigned last)</span><br><span class="line">&#123;</span><br><span class="line">	while (first++ &lt; last)</span><br><span class="line">	&#123;</span><br><span class="line">		if (&#39;A&#39; &lt;&#x3D; data[first] &amp;&amp; data[first] &lt;&#x3D; &#39;Z&#39;)</span><br><span class="line">			data[first] +&#x3D; (&#39;a&#39; - &#39;A&#39;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">const char&amp; vlyf::string::operator[](unsigned i) const</span><br><span class="line">&#123;</span><br><span class="line">	return data[i];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">char&amp; vlyf::string::operator[](unsigned i)</span><br><span class="line">&#123;</span><br><span class="line">	return data[i];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">string&amp; vlyf::string::operator&#x3D;(const char* s)</span><br><span class="line">&#123;</span><br><span class="line">	char* temp &#x3D; data;					&#x2F;&#x2F;保存原本数据，确保异常安全性</span><br><span class="line">	unsigned n &#x3D; 0;</span><br><span class="line">	while (s[n] !&#x3D; &#39;\0&#39;)</span><br><span class="line">		n++;</span><br><span class="line">	length &#x3D; n;</span><br><span class="line">	data &#x3D; new char[n];</span><br><span class="line">	for (unsigned i &#x3D; 0; i &lt; n; i++)</span><br><span class="line">		data[i] &#x3D; s[i];</span><br><span class="line">	delete[] temp;</span><br><span class="line">	return *this;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">inline</span><br><span class="line">string&amp; vlyf::string::operator&#x3D;(const string&amp; str)</span><br><span class="line">&#123;</span><br><span class="line">	if (this &#x3D;&#x3D; &amp;str) return *this;</span><br><span class="line">	char* temp &#x3D; str.data;				&#x2F;&#x2F;保存原本数据，确保异常安全性</span><br><span class="line"></span><br><span class="line">	unsigned len &#x3D; str.Length();</span><br><span class="line">	data &#x3D; new char[len];</span><br><span class="line">	for (unsigned i &#x3D; 0; i &lt; len; i++)</span><br><span class="line">		data[i] &#x3D; str[i];</span><br><span class="line">	length &#x3D; len;</span><br><span class="line">	delete[] temp;</span><br><span class="line">	return *this;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">inline</span><br><span class="line">string&amp; string::operator+&#x3D;(const string&amp; str)</span><br><span class="line">&#123;</span><br><span class="line">	unsigned len &#x3D; length + str.Length();</span><br><span class="line">	char* ss &#x3D; new char[len];</span><br><span class="line">	for (unsigned i &#x3D; 0; i &lt; Length(); i++)</span><br><span class="line">		ss[i] &#x3D; data[i];</span><br><span class="line">	for (unsigned i &#x3D; 0; i &lt; str.Length(); i++)</span><br><span class="line">		ss[i + length] &#x3D; str[i];</span><br><span class="line">	delete[]data;</span><br><span class="line">	data &#x3D; ss;</span><br><span class="line">	length &#x3D; len;</span><br><span class="line">	return *this;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">std::ostream&amp; vlyf::operator&lt;&lt;(std::ostream&amp; os, const string&amp; str)</span><br><span class="line">&#123;</span><br><span class="line">	if (str.Length() &gt; 0)</span><br><span class="line">	&#123;</span><br><span class="line">		for (unsigned i &#x3D; 0; i &lt; str.Length(); i++)</span><br><span class="line">			os &lt;&lt; str[i];</span><br><span class="line">	&#125;</span><br><span class="line">	else</span><br><span class="line">	&#123;</span><br><span class="line">		os &lt;&lt; &quot;&quot;;</span><br><span class="line">	&#125;</span><br><span class="line">	return os;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">std::istream&amp; vlyf::operator&gt;&gt;(std::istream&amp; is,string&amp; str)</span><br><span class="line">&#123;</span><br><span class="line">	char* ss &#x3D; new char[1000];</span><br><span class="line">	is &gt;&gt; ss;</span><br><span class="line">	str &#x3D; string(ss);</span><br><span class="line">	return is;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">string vlyf::operator+(const string&amp; lhs, const string&amp; rhs)</span><br><span class="line">&#123;</span><br><span class="line">	return string(lhs) +&#x3D; rhs;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">string vlyf::operator+(const string&amp; lhs, const char* rhs)</span><br><span class="line">&#123;</span><br><span class="line">	return string(lhs) +&#x3D; string(rhs);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">string vlyf::operator+(const char* lhs, const string&amp; rhs)</span><br><span class="line">&#123;</span><br><span class="line">	return string(lhs) +&#x3D; string(rhs);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">bool vlyf::operator&#x3D;&#x3D;(const string&amp; lhs, const string&amp; rhs)</span><br><span class="line">&#123;</span><br><span class="line">	if (lhs.Length() !&#x3D; rhs.Length())</span><br><span class="line">		return false;</span><br><span class="line">	unsigned n &#x3D; 0;</span><br><span class="line">	unsigned len &#x3D; lhs.Length();</span><br><span class="line">	while (lhs[n] &#x3D;&#x3D; rhs[n] &amp;&amp; len !&#x3D; n)</span><br><span class="line">		n++;</span><br><span class="line">	return n &#x3D;&#x3D; len;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">bool vlyf::operator!&#x3D;(const string&amp; lhs, const string&amp; rhs)</span><br><span class="line">&#123;</span><br><span class="line">	if (lhs.Length() !&#x3D; rhs.Length())</span><br><span class="line">		return true;</span><br><span class="line">	unsigned n &#x3D; 0;</span><br><span class="line">	unsigned len &#x3D; lhs.Length();</span><br><span class="line">	while (lhs[n] &#x3D;&#x3D; rhs[n] &amp;&amp; len !&#x3D; n)</span><br><span class="line">		n++;</span><br><span class="line">	return n !&#x3D; len;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">bool vlyf::operator&lt;(const string&amp; lhs, const string&amp; rhs)</span><br><span class="line">&#123;</span><br><span class="line">	unsigned min &#x3D; (lhs.Length() &lt; rhs.Length()) ? lhs.Length() : rhs.Length();</span><br><span class="line">	unsigned n &#x3D; 0;</span><br><span class="line">	while (lhs[n] &#x3D;&#x3D; rhs[n] &amp;&amp; n !&#x3D; min)</span><br><span class="line">		n++;</span><br><span class="line">	if (n &#x3D;&#x3D; min) return lhs.Length() &lt; rhs.Length();</span><br><span class="line">	else</span><br><span class="line">	&#123;</span><br><span class="line">		if (lhs[n] &lt; rhs[n])</span><br><span class="line">			return lhs.Length() &lt; rhs.Length();</span><br><span class="line">		else</span><br><span class="line">			return lhs.Length() &gt; rhs.Length();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">bool vlyf::operator&gt;(const string&amp; lhs, const string&amp; rhs)</span><br><span class="line">&#123;</span><br><span class="line">	return lhs &lt; rhs;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">int main()</span><br><span class="line">&#123;</span><br><span class="line">	string s1 &#x3D; &quot;123&quot;;</span><br><span class="line">	std::cout &lt;&lt; &quot;s1:&quot; &lt;&lt; s1 &lt;&lt; &quot;		length: &quot; &lt;&lt; s1.Length() &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">	string s2(&quot;456&quot;);</span><br><span class="line">	std::cout &lt;&lt; &quot;s2:&quot; &lt;&lt; s2 &lt;&lt; &quot;		length: &quot; &lt;&lt; s2.Length() &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">	string s3(s1);</span><br><span class="line">	std::cout &lt;&lt; &quot;s3:&quot; &lt;&lt; s3 &lt;&lt; &quot;		length: &quot; &lt;&lt; s3.Length() &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">	string s4 &#x3D; s3;</span><br><span class="line">	std::cout &lt;&lt; &quot;s4:&quot; &lt;&lt; s4 &lt;&lt; &quot;		length: &quot; &lt;&lt; s4.Length() &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">	string s5(s1);</span><br><span class="line">	s5 +&#x3D; s2;</span><br><span class="line">	std::cout &lt;&lt; &quot;s5:&quot; &lt;&lt; s5 &lt;&lt; &quot;		length: &quot; &lt;&lt; s5.Length() &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">	string s6(s5);</span><br><span class="line">	std::cout &lt;&lt; &quot;s6:&quot; &lt;&lt; s6 &lt;&lt; &quot;		length: &quot; &lt;&lt; s6.Length() &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">	if (s5 &#x3D;&#x3D; s6) std::cout &lt;&lt; &quot;s5 &#x3D;&#x3D; s6:		true&quot; &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">	string s7 &#x3D; s1 + &quot;456&quot;;</span><br><span class="line">	std::cout &lt;&lt; &quot;s7:&quot; &lt;&lt; s7 &lt;&lt; &quot;		length: &quot; &lt;&lt; s7.Length() &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">	string s8 &#x3D; &quot;456&quot; + s1;</span><br><span class="line">	std::cout &lt;&lt; &quot;s8:&quot; &lt;&lt; s8 &lt;&lt; &quot;		length: &quot; &lt;&lt; s8.Length() &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">	string s9 &#x3D; s7 + s8;</span><br><span class="line">	std::cout &lt;&lt; &quot;s9:&quot; &lt;&lt; s9 &lt;&lt; &quot;		length: &quot; &lt;&lt; s9.Length() &lt;&lt; std::endl;</span><br><span class="line"></span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%BD%AE%E5%AD%90/" rel="tag"># 轮子</a>
+              <a href="/tags/C/" rel="tag"># C++</a>
+              <a href="/tags/string/" rel="tag"># string</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/03/20/haskell%E7%BB%83%E4%B9%A0%E9%80%92%E5%BD%92%E6%A8%A1%E5%BC%8F%E5%8C%B9%E9%85%8D/" rel="next" title="haskell练习递归模式匹配">
+                  haskell练习递归模式匹配 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Liu Yifan</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.css">
+
+<script>
+NexT.utils.loadComments('#gitalk-container', () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1.7.0/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '7567bbfe4a1d2eda089c',
+      clientSecret: 'a941072e79ee215cc8f0ea82b9823a13d4897923',
+      repo        : 'comment',
+      owner       : 'ManateeFan',
+      admin       : ['ManateeFan'],
+      id          : 'e17a2ed340ecf433582b47a070445567',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
