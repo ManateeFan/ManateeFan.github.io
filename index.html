@@ -257,7 +257,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2020-12-03 13:38:53 / 修改时间：14:06:38" itemprop="dateCreated datePublished" datetime="2020-12-03T13:38:53+08:00">2020-12-03</time>
+      <time title="创建时间：2020-12-03 13:38:53 / 修改时间：14:32:13" itemprop="dateCreated datePublished" datetime="2020-12-03T13:38:53+08:00">2020-12-03</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -279,59 +279,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="第11章-线程"><a href="#第11章-线程" class="headerlink" title="第11章 线程"></a>第11章 线程</h2><h3 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h3><p>一个进程中的所有线程<strong>共享该进程的地址空间</strong>，例如：程序的代码段、全局内存、堆内存、栈、文件描述符等。<br>&lt; !–more–&gt;<br>线程拥有：</p>
-<ul>
-<li>只在<strong>所属进程中有效的线程ID</strong></li>
-<li>一组寄存器</li>
-<li>栈</li>
-<li>调度优先级和策略</li>
-<li>信号屏蔽字</li>
-<li>errno</li>
-<li>线程私有数据</li>
-</ul>
-<h3 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h3><p>进程中每个线程各自执行独立任务。优点：</p>
-<ul>
-<li>为<strong>每种事件类型分配单独的处理线程</strong>，简化处理异步事件的代码，而每个线程可以同步的进行时间处理</li>
-<li>多个线程访问相同的<strong>地址空间</strong>和<strong>文件描述符</strong></li>
-<li>将<strong>大任务分解</strong>到不同的线程中去完成</li>
-<li>某些<strong>线程阻塞</strong>时可以运行另外一些线程</li>
-</ul>
-<h3 id="线程创建"><a href="#线程创建" class="headerlink" title="线程创建"></a>线程创建</h3><p>线程创建时<strong>并不保证</strong>哪个线程先运行，新创建线程<strong>继承调用线程</strong>的浮点环境和<strong>信号屏蔽字</strong>，但<strong>阻塞信号集被清除</strong>。</p>
-<h3 id="线程终止"><a href="#线程终止" class="headerlink" title="线程终止"></a>线程终止</h3><p>同一个进程中的任意线程调用<code>exit、_Exit、_exit</code>，整个进程就终止；一个终止信号发送给某个线程，整个进程也会终止。</p>
-<p>单个线程退出：</p>
-<ul>
-<li>从启动例程返回</li>
-<li>被同一进程中的其他线程取消</li>
-<li>调用<code>pthread_exit</code></li>
-</ul>
-<p>线程可以用<code>pthread_join</code>阻塞自己获取另一个线程的终止状态，但若对方是分离状态(调用<code>pthread_detach</code>)，会产生未定义行为。</p>
-<h3 id="线程同步"><a href="#线程同步" class="headerlink" title="线程同步"></a>线程同步</h3><p>对一个变量增加分为3步：</p>
-<ul>
-<li>从内存单元读入变量到寄存器</li>
-<li>在寄存器中增加</li>
-<li>将寄存器中新值写回内存单元</li>
-</ul>
-<p>上面3步不是原子操作。多个线程修改访问共享内存会产生竞争。</p>
-<h3 id="互斥量"><a href="#互斥量" class="headerlink" title="互斥量"></a>互斥量</h3><p>访问共享资源前对互斥量加锁，访问完后解锁。在加锁后任何试图对该互斥量加锁的线程都被阻塞，直到解锁。</p>
-<h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><p>线程对同一个互斥量加锁两次，就会陷入死锁状态。</p>
-<p>线程1占有互斥量1，并阻塞于互斥量2；线程2占有互斥量2，并阻塞于互斥量1，也是死锁，两个线程都相互请求另一个线程拥有的资源。</p>
-<p>可以<strong>控制加锁顺序避免死锁</strong>。例如，所有线程总是先加锁互斥量A再加锁互斥量B。</p>
-<h3 id="读写锁"><a href="#读写锁" class="headerlink" title="读写锁"></a>读写锁</h3><p><strong>读共享，写互斥。</strong>和互斥量相似，但允许更高的并行性。适合对<strong>数据结构读次数远大于写</strong>的情况。</p>
-<p><strong>三种状态：</strong></p>
-<ul>
-<li>读加锁：<strong>试图写加锁</strong>的线程被阻塞，直到<strong>读锁全部释放</strong>；<strong>试图读加锁的线程获得访问权</strong>。</li>
-<li>写加锁：<strong>试图加锁</strong>的线程被阻塞，知道写锁释放</li>
-<li>不加锁</li>
-</ul>
-<h4 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h4><p>作业请求队列由一个读写锁保护，多个工作线程获取主线程分配给它们的作业。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;pthread.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">job</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">job</span> *<span class="title">j_next</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">job</span> *<span class="title">j_prev</span>;</span></span><br><span class="line">    <span class="keyword">pthread_t</span> j_id; <span class="comment">// which thread handles this job</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">queue</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">job</span> *<span class="title">q_head</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">job</span> *<span class="title">q_tail</span>;</span></span><br><span class="line">    <span class="keyword">pthread_rwlock_t</span> q_lock;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// init a queue</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">queue_init</span><span class="params">(struct <span class="built_in">queue</span> *qp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> err;</span><br><span class="line">    qp-&gt;q_head = <span class="literal">NULL</span>;</span><br><span class="line">    qp-&gt;q_tail = <span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">    err = pthread_rwlock_init(&amp;qp-&gt;q_lock, <span class="literal">NULL</span>);</span><br><span class="line">    <span class="keyword">if</span> (err != <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> err;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// insert a job at the head of the queue</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">job_insert</span><span class="params">(struct <span class="built_in">queue</span> *qp, struct job *jp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    pthread_rwlock_wrlock(&amp;qp-&gt;q_lock);</span><br><span class="line">    jp-&gt;j_next = qp-&gt;q_head;</span><br><span class="line">    jp-&gt;j_prev = <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">if</span> (qp-&gt;q_head != <span class="literal">NULL</span>)</span><br><span class="line">        qp-&gt;q_head-&gt;j_prev = jp;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        qp-&gt;q_tail = jp;</span><br><span class="line">    qp-&gt;q_head = jp;</span><br><span class="line">    pthread_rwlock_unlock(&amp;qp-&gt;q_lock);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// append a job on the tail of the queue, use write lock</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">job_append</span><span class="params">(struct <span class="built_in">queue</span> *qp, struct job *jp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    pthread_rwlock_wrlock(&amp;qp-&gt;q-&gt;lock);</span><br><span class="line">    jp-&gt;j_next = <span class="literal">NULL</span>;</span><br><span class="line">    jp-&gt;j_prev = qp-&gt;q_tail;</span><br><span class="line">    <span class="keyword">if</span> (qp-&gt;q_tail != <span class="literal">NULL</span>)</span><br><span class="line">        qp-&gt;q_tail-&gt;j_next = jp;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        qp-&gt;q_head = jp;</span><br><span class="line">    qp-&gt;q_tail = jp;</span><br><span class="line">    pthread_rwlock_unlock(&amp;qp-&gt;q_lock);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// remove the given job from the queue, use write lock</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">job_remove</span><span class="params">(struct <span class="built_in">queue</span> *qp, struct job *jp)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    pthread_rwlock_wrlock(&amp;qp-&gt;q_lock);</span><br><span class="line">    <span class="keyword">if</span> (jp == qp-&gt;q_head)</span><br><span class="line">    &#123;</span><br><span class="line">        qp-&gt;q_head = jp-&gt;j_next;</span><br><span class="line">        <span class="keyword">if</span> (qp-&gt;q_tail = jp)</span><br><span class="line">            qp-&gt;q_tail = <span class="literal">NULL</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            jp-&gt;j_next-&gt;j_prev = jp-&gt;j_prev;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (jp == qp-&gt;q_tail)</span><br><span class="line">    &#123;</span><br><span class="line">        qp-&gt;q_tail = jp-&gt;j_prev;</span><br><span class="line">        jp-&gt;j_prev-&gt;j_next = jp-&gt;j_next;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        jp-&gt;j_prev-&gt;j_next = jp-&gt;j_next;</span><br><span class="line">        jp-&gt;j_next-&gt;j_prev = jp-&gt;j_prev;</span><br><span class="line">    &#125;</span><br><span class="line">    pthread_rwlock_unlock(&amp;qp-&gt;q_lock);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// find a job, use read lock</span></span><br><span class="line"><span class="function">struct job *<span class="title">job_find</span><span class="params">(struct <span class="built_in">queue</span> *qp, <span class="keyword">pthread_t</span> id)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">job</span> *<span class="title">jp</span>;</span></span><br><span class="line">    <span class="keyword">if</span> (pthread_rwlock_rdlock(&amp;qp-&gt;q_lock) != <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">    <span class="keyword">for</span> (jp = qp-&gt;q_head; jp != <span class="literal">NULL</span>; jp = jp-&gt;j_next)</span><br><span class="line">        <span class="keyword">if</span> (pthread_equal(jp-&gt;j_id, id))</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    pthread_rwlock_unlock(&amp;qp-&gt;q_lock);</span><br><span class="line">    <span class="keyword">return</span> jp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="条件变量"><a href="#条件变量" class="headerlink" title="条件变量"></a>条件变量</h3><p><strong>条件受到互斥量保护</strong>，线程改变条件状态前要先<strong>锁住互斥量</strong>。</p>
-<p><code>pthread_cond_wait(cond, mutex)</code>的mutex<strong>保护用户自定义条件并非条件变量本身</strong>，故在查看条件前要先锁住mutex，以防其他线程改变条件。该函数把调用线程放入等待队列，然后对muxtex解锁，<em>之后可能会阻塞，所以要在阻塞前解锁</em>，该<strong>函数返回时（被唤醒），互斥量再次被锁住</strong>。在线程改变条件前先要锁住mutex，这保证了唤醒事件一定能够唤醒对应线程。因为在将线程加入等待队列过程中，mutex一直是锁住的，执行唤醒的线程会阻塞到mutex，直到等待线程成功被加入到等待队列。如果不用mutex保护条件，那么唤醒信号发出后，对应的等待线程可能没加入等待线程队列，导致唤醒丢失。</p>
-<p><code>pthread_cond_wait</code>模拟过程：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">mutex.lock();</span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> (判断“条件”是否成立) &#123;</span><br><span class="line">    做一些其它事情</span><br><span class="line">    mutext.unlock()</span><br><span class="line">    阻塞</span><br><span class="line">    唤醒</span><br><span class="line">    mutext.lock()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">mutext.unlock();</span><br></pre></td></tr></table></figure>
-
-
+          <h2 id="第11章-线程"><a href="#第11章-线程" class="headerlink" title="第11章 线程"></a>第11章 线程</h2><h3 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h3><p>一个进程中的所有线程<strong>共享该进程的地址空间</strong>，例如：程序的代码段、全局内存、堆内存、栈、文件描述符等。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/12/03/UNIX%E7%8E%AF%E5%A2%83%E9%AB%98%E7%BA%A7%E7%BC%96%E7%A8%8B%E9%83%A8%E5%88%86%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -463,6 +419,24 @@
   </span>
   <span class="author" itemprop="copyrightHolder">Liu Yifan</span>
 </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
   </div>
 
@@ -482,6 +456,7 @@
 
 
   
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
 
