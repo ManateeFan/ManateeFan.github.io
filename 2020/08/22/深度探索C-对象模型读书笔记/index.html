@@ -37,7 +37,7 @@
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1557560/202012/1557560-20201202210518936-1966052609.png">
 <meta property="og:image" content="https://img2020.cnblogs.com/blog/1557560/202012/1557560-20201202210530834-427379571.png">
 <meta property="article:published_time" content="2020-08-22T06:29:04.000Z">
-<meta property="article:modified_time" content="2020-12-03T11:13:55.000Z">
+<meta property="article:modified_time" content="2020-12-05T10:16:44.008Z">
 <meta property="article:author" content="刘一凡">
 <meta property="article:tag" content="C++">
 <meta property="article:tag" content="对象模型">
@@ -168,7 +168,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <section class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E7%AB%A0-%E5%85%B3%E4%BA%8E%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.</span> <span class="nav-text">第一章  关于对象</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BD%B1%E5%93%8DC-%E7%BB%A7%E6%89%BF%E4%BD%93%E7%B3%BB%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E5%92%8C%E5%AD%98%E5%8F%96%E6%97%B6%E9%97%B4%E7%9A%84%E5%9B%A0%E7%B4%A0"><span class="nav-number">1.1.</span> <span class="nav-text">影响C++继承体系对象的内存布局和存取时间的因素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#class-member-%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.2.</span> <span class="nav-text">class member 类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#C-%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.3.</span> <span class="nav-text">C++对象模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%A7%E6%89%BF"><span class="nav-number">1.4.</span> <span class="nav-text">继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#access-section"><span class="nav-number">1.5.</span> <span class="nav-text">access section</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%AF%E6%8C%81%E5%A4%9A%E6%80%81"><span class="nav-number">1.6.</span> <span class="nav-text">支持多态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E5%86%85%E5%AD%98"><span class="nav-number">1.7.</span> <span class="nav-text">对象内存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%87%E9%92%88%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.8.</span> <span class="nav-text">指针的类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#struct%E5%92%8Cclass"><span class="nav-number">1.9.</span> <span class="nav-text">struct和class</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E8%AF%AD%E4%B9%89%E5%AD%A6"><span class="nav-number">2.</span> <span class="nav-text">第二章 构造函数语义学</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E5%AD%97explicit"><span class="nav-number">2.1.</span> <span class="nav-text">关键字explicit</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%BB%98%E8%AE%A4%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">2.2.</span> <span class="nav-text">默认构造函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B1%BB%E4%B8%AD%E7%9A%84%E6%88%90%E5%91%98%E5%AF%B9%E8%B1%A1%E5%90%AB%E6%9C%89%E9%BB%98%E8%AE%A4%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">2.2.1.</span> <span class="nav-text">类中的成员对象含有默认构造函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%A5%E7%B1%BB%E6%B4%BE%E7%94%9F%E4%BA%8E%E5%B8%A6%E6%9C%89%E9%BB%98%E8%AE%A4%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E7%9A%84%E5%9F%BA%E7%B1%BB"><span class="nav-number">2.2.2.</span> <span class="nav-text">该类派生于带有默认构造函数的基类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AD%98%E5%9C%A8%E8%99%9A%E5%87%BD%E6%95%B0%E7%9A%84%E7%B1%BB"><span class="nav-number">2.2.3.</span> <span class="nav-text">存在虚函数的类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%A6%E6%9C%89%E8%99%9A%E5%9F%BA%E7%B1%BB"><span class="nav-number">2.2.4.</span> <span class="nav-text">带有虚基类</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">2.3.</span> <span class="nav-text">拷贝构造函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8C%89%E4%BD%8D%E9%80%90%E6%AC%A1%E6%8B%B7%E8%B4%9D"><span class="nav-number">2.4.</span> <span class="nav-text">按位逐次拷贝</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E5%90%88%E6%88%90%E6%97%B6%E6%9C%BA-nontrivial"><span class="nav-number">2.5.</span> <span class="nav-text">拷贝构造函数合成时机(nontrivial)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E5%9F%BA%E7%B1%BB%E5%AD%90%E5%AF%B9%E8%B1%A1"><span class="nav-number">2.6.</span> <span class="nav-text">虚基类子对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E8%BD%AC%E5%8C%96%E8%AF%AD%E4%B9%89%E5%AD%A6"><span class="nav-number">2.7.</span> <span class="nav-text">程序转化语义学</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%88%90%E5%91%98%E5%88%9D%E5%A7%8B%E5%8C%96%E5%88%97%E8%A1%A8"><span class="nav-number">2.8.</span> <span class="nav-text">成员初始化列表</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E7%AB%A0-%E5%85%B3%E4%BA%8E%E5%AF%B9%E8%B1%A1"><span class="nav-number">1.</span> <span class="nav-text">第一章  关于对象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%B1%E5%93%8DC-%E7%BB%A7%E6%89%BF%E4%BD%93%E7%B3%BB%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%86%85%E5%AD%98%E5%B8%83%E5%B1%80%E5%92%8C%E5%AD%98%E5%8F%96%E6%97%B6%E9%97%B4%E7%9A%84%E5%9B%A0%E7%B4%A0"><span class="nav-number">1.1.</span> <span class="nav-text">影响C++继承体系对象的内存布局和存取时间的因素</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#class-member-%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.2.</span> <span class="nav-text">class member 类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#C-%E5%AF%B9%E8%B1%A1%E6%A8%A1%E5%9E%8B"><span class="nav-number">1.3.</span> <span class="nav-text">C++对象模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%A7%E6%89%BF"><span class="nav-number">1.4.</span> <span class="nav-text">继承</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#access-section"><span class="nav-number">1.5.</span> <span class="nav-text">access section</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%AF%E6%8C%81%E5%A4%9A%E6%80%81"><span class="nav-number">1.6.</span> <span class="nav-text">支持多态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E5%86%85%E5%AD%98"><span class="nav-number">1.7.</span> <span class="nav-text">对象内存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E9%92%88%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.8.</span> <span class="nav-text">指针的类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#struct%E5%92%8Cclass"><span class="nav-number">1.9.</span> <span class="nav-text">struct和class</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E7%AB%A0-%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E8%AF%AD%E4%B9%89%E5%AD%A6"><span class="nav-number">2.</span> <span class="nav-text">第二章 构造函数语义学</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E5%AD%97explicit"><span class="nav-number">2.1.</span> <span class="nav-text">关键字explicit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%BB%98%E8%AE%A4%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">2.2.</span> <span class="nav-text">默认构造函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B1%BB%E4%B8%AD%E7%9A%84%E6%88%90%E5%91%98%E5%AF%B9%E8%B1%A1%E5%90%AB%E6%9C%89%E9%BB%98%E8%AE%A4%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">2.3.</span> <span class="nav-text">类中的成员对象含有默认构造函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%A5%E7%B1%BB%E6%B4%BE%E7%94%9F%E4%BA%8E%E5%B8%A6%E6%9C%89%E9%BB%98%E8%AE%A4%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E7%9A%84%E5%9F%BA%E7%B1%BB"><span class="nav-number">2.4.</span> <span class="nav-text">该类派生于带有默认构造函数的基类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%98%E5%9C%A8%E8%99%9A%E5%87%BD%E6%95%B0%E7%9A%84%E7%B1%BB"><span class="nav-number">2.5.</span> <span class="nav-text">存在虚函数的类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B8%A6%E6%9C%89%E8%99%9A%E5%9F%BA%E7%B1%BB"><span class="nav-number">2.6.</span> <span class="nav-text">带有虚基类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-number">2.7.</span> <span class="nav-text">拷贝构造函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%89%E4%BD%8D%E9%80%90%E6%AC%A1%E6%8B%B7%E8%B4%9D"><span class="nav-number">2.8.</span> <span class="nav-text">按位逐次拷贝</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%B7%E8%B4%9D%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E5%90%88%E6%88%90%E6%97%B6%E6%9C%BA-nontrivial"><span class="nav-number">2.9.</span> <span class="nav-text">拷贝构造函数合成时机(nontrivial)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E5%9F%BA%E7%B1%BB%E5%AD%90%E5%AF%B9%E8%B1%A1"><span class="nav-number">2.10.</span> <span class="nav-text">虚基类子对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E8%BD%AC%E5%8C%96%E8%AF%AD%E4%B9%89%E5%AD%A6"><span class="nav-number">2.11.</span> <span class="nav-text">程序转化语义学</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%88%90%E5%91%98%E5%88%9D%E5%A7%8B%E5%8C%96%E5%88%97%E8%A1%A8"><span class="nav-number">2.12.</span> <span class="nav-text">成员初始化列表</span></a></li></ol></li></ol></div>
         </section>
         <!--/noindex-->
 
@@ -280,7 +280,7 @@
           <i class="far fa-calendar-check"></i>
         </span>
         <span class="post-meta-item-text">更新于</span>
-        <time title="修改时间：2020-12-03 19:13:55" itemprop="dateModified" datetime="2020-12-03T19:13:55+08:00">2020-12-03</time>
+        <time title="修改时间：2020-12-05 18:16:44" itemprop="dateModified" datetime="2020-12-05T18:16:44+08:00">2020-12-05</time>
       </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -309,24 +309,24 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h2 id="第一章-关于对象"><a href="#第一章-关于对象" class="headerlink" title="第一章  关于对象"></a>第一章  关于对象</h2><h3 id="影响C-继承体系对象的内存布局和存取时间的因素"><a href="#影响C-继承体系对象的内存布局和存取时间的因素" class="headerlink" title="影响C++继承体系对象的内存布局和存取时间的因素"></a>影响C++继承体系对象的内存布局和存取时间的因素</h3><ul>
+        <h1 id="第一章-关于对象"><a href="#第一章-关于对象" class="headerlink" title="第一章  关于对象"></a>第一章  关于对象</h1><h2 id="影响C-继承体系对象的内存布局和存取时间的因素"><a href="#影响C-继承体系对象的内存布局和存取时间的因素" class="headerlink" title="影响C++继承体系对象的内存布局和存取时间的因素"></a>影响C++继承体系对象的内存布局和存取时间的因素</h2><ul>
 <li>虚函数</li>
 <li>虚基类</li>
 </ul>
-<h3 id="class-member-类型"><a href="#class-member-类型" class="headerlink" title="class member 类型"></a>class member 类型</h3><ul>
+<h2 id="class-member-类型"><a href="#class-member-类型" class="headerlink" title="class member 类型"></a>class member 类型</h2><ul>
 <li>data member: static, nonstatic</li>
 <li>member function: static, nonstatic</li>
 </ul>
 <a id="more"></a>
 
-<h3 id="C-对象模型"><a href="#C-对象模型" class="headerlink" title="C++对象模型"></a>C++对象模型</h3><ul>
+<h2 id="C-对象模型"><a href="#C-对象模型" class="headerlink" title="C++对象模型"></a>C++对象模型</h2><ul>
 <li>每个类对象拥有各自的 <strong>nonstatic data member</strong></li>
 <li>static data member, static 和 nonstatic member function独立于类对象之外,只有一个实例</li>
 <li>若有虚函数,则每个类产生指向每个虚函数的指针,并将指针放于**虚表(virtual table)**中,每个类的type_info 对象(用来支持RTTI,运行时类型鉴定)通常放在表格的第一个位置</li>
 <li>每个类对象含有一个额外<strong>vptr指针</strong>,它指向该类相关的虚表(virtual table),vptr由该类的constructor,destruct和copy assignment运算符自动完成设置</li>
 </ul>
 <p><img src="https://img2020.cnblogs.com/blog/1557560/202012/1557560-20201202210444758-1045208362.png"></p>
-<h3 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h3><ul>
+<h2 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h2><ul>
 <li>单一继承</li>
 </ul>
 <p><img src="https://img2020.cnblogs.com/blog/1557560/202012/1557560-20201202210554468-841200151.png"></p>
@@ -339,29 +339,29 @@
 </ul>
 <p><img src="https://img2020.cnblogs.com/blog/1557560/202012/1557560-20201202210620662-971119151.png"></p>
 <p><strong>虚拟继承时,基类只会存在一个实例(subobject)</strong></p>
-<h3 id="access-section"><a href="#access-section" class="headerlink" title="access section"></a>access section</h3><p>处于<strong>同一个access section的数据,以其声明的顺序出现在内存布局中</strong>,就是同为public,private或protect访问权限</p>
-<h3 id="支持多态"><a href="#支持多态" class="headerlink" title="支持多态"></a>支持多态</h3><ul>
+<h2 id="access-section"><a href="#access-section" class="headerlink" title="access section"></a>access section</h2><p>处于<strong>同一个access section的数据,以其声明的顺序出现在内存布局中</strong>,就是同为public,private或protect访问权限</p>
+<h2 id="支持多态"><a href="#支持多态" class="headerlink" title="支持多态"></a>支持多态</h2><ul>
 <li><strong>多态只存在于public继承体系中</strong></li>
 <li>隐式转化.把派生类指针或引用转化成public基类的指针或引用</li>
 <li>虚函数机制</li>
 <li>dynamic_cast()和typeid运算符</li>
 <li>在执行期根据对象的真正类型解析出正确被调用的函数</li>
 </ul>
-<h3 id="对象内存"><a href="#对象内存" class="headerlink" title="对象内存"></a>对象内存</h3><ul>
+<h2 id="对象内存"><a href="#对象内存" class="headerlink" title="对象内存"></a>对象内存</h2><ul>
 <li>nostatic data members</li>
 <li>为了边界对齐而添加的空间</li>
 <li>支持虚函数的vptr</li>
 </ul>
-<h3 id="指针的类型"><a href="#指针的类型" class="headerlink" title="指针的类型"></a>指针的类型</h3><ul>
+<h2 id="指针的类型"><a href="#指针的类型" class="headerlink" title="指针的类型"></a>指针的类型</h2><ul>
 <li>指针类型的差异体现在<strong>其寻址出来的对象的类型不同,指针类型告诉了编译器如何去解析该地址的内存内容和大小</strong></li>
 <li>转换(cast)就是一种编译器指令,告诉编译器该如何解析指针指向的内存区域</li>
 </ul>
-<h3 id="struct和class"><a href="#struct和class" class="headerlink" title="struct和class"></a>struct和class</h3><ul>
+<h2 id="struct和class"><a href="#struct和class" class="headerlink" title="struct和class"></a>struct和class</h2><ul>
 <li>struct默认是public权限，class默认是private权限</li>
 <li>struct实现的是数据的集合，class实现了ADT观念，将数据和操作同时封装</li>
 <li>struct默认是public继承，class默认是private继承</li>
 </ul>
-<h2 id="第二章-构造函数语义学"><a href="#第二章-构造函数语义学" class="headerlink" title="第二章 构造函数语义学"></a>第二章 构造函数语义学</h2><h3 id="关键字explicit"><a href="#关键字explicit" class="headerlink" title="关键字explicit"></a>关键字explicit</h3><p>修饰构造函数，可以防止单一参数的构造函数被视为类型转换操作。</p>
+<h1 id="第二章-构造函数语义学"><a href="#第二章-构造函数语义学" class="headerlink" title="第二章 构造函数语义学"></a>第二章 构造函数语义学</h1><h2 id="关键字explicit"><a href="#关键字explicit" class="headerlink" title="关键字explicit"></a>关键字explicit</h2><p>修饰构造函数，可以防止单一参数的构造函数被视为类型转换操作。</p>
 <p>不加explicit时：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Foo</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">  Foo(<span class="keyword">int</span> a);</span><br><span class="line">  Foo(<span class="keyword">const</span> Foo&amp; f);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
 
@@ -373,20 +373,20 @@
 
 
 
-<h3 id="默认构造函数"><a href="#默认构造函数" class="headerlink" title="默认构造函数"></a>默认构造函数</h3><p>对于类X，如果没声明任何构造函数，那么会有一个默认构造函数被编译器隐式生成，它可能是trivial(根本不会生成)，也可能是notrivial(会生成)的。</p>
+<h2 id="默认构造函数"><a href="#默认构造函数" class="headerlink" title="默认构造函数"></a>默认构造函数</h2><p>对于类X，如果没声明任何构造函数，那么会有一个默认构造函数被编译器隐式生成，它可能是trivial(根本不会生成)，也可能是notrivial(会生成)的。</p>
 <p>以下分4种情况说明：</p>
-<h4 id="类中的成员对象含有默认构造函数"><a href="#类中的成员对象含有默认构造函数" class="headerlink" title="类中的成员对象含有默认构造函数"></a>类中的成员对象含有默认构造函数</h4><p>如果该类没有构造函数，但它含有的对象拥有默认构造函数，那么编译器会生成implicit inline notrivial的默认构造函数，如果函数太复杂，会合成explicit static实例。该<strong>默认构造函数会按顺序调用相应成员的默认构造函数</strong>。</p>
+<h2 id="类中的成员对象含有默认构造函数"><a href="#类中的成员对象含有默认构造函数" class="headerlink" title="类中的成员对象含有默认构造函数"></a>类中的成员对象含有默认构造函数</h2><p>如果该类没有构造函数，但它含有的对象拥有默认构造函数，那么编译器会生成implicit inline notrivial的默认构造函数，如果函数太复杂，会合成explicit static实例。该<strong>默认构造函数会按顺序调用相应成员的默认构造函数</strong>。</p>
 <p>如果该类有构造函数，编译器会在每个构造函数中首部安插代码来调用类成员相应的默认构造函数。</p>
 <p>总的意思就是，类成员有默认构造函数，说明它需要被初始化，所以编译器需要做工作去初始化他们。</p>
-<h4 id="该类派生于带有默认构造函数的基类"><a href="#该类派生于带有默认构造函数的基类" class="headerlink" title="该类派生于带有默认构造函数的基类"></a>该类派生于带有默认构造函数的基类</h4><p>基类有默认构造函数，说明基类需要被正确初始化，此时会通过生成默认构造函数或安插代码先调用基类的默认构造函数初始化基类部分，而后处理相应的类成员(如果有的话）。</p>
-<h4 id="存在虚函数的类"><a href="#存在虚函数的类" class="headerlink" title="存在虚函数的类"></a>存在虚函数的类</h4><p>原理同上，编译器生成相关代码初始化vptr和vprtable。</p>
-<h4 id="带有虚基类"><a href="#带有虚基类" class="headerlink" title="带有虚基类"></a>带有虚基类</h4><p>多重继承中的虚基类在子类对象中只保留一个，需要构造函数设置相应的虚基类对象指针。</p>
-<h3 id="拷贝构造函数"><a href="#拷贝构造函数" class="headerlink" title="拷贝构造函数"></a>拷贝构造函数</h3><p>拷贝构造也分为trivial和nontrivial，并且nontrivial才会被编译器真正合成。</p>
+<h2 id="该类派生于带有默认构造函数的基类"><a href="#该类派生于带有默认构造函数的基类" class="headerlink" title="该类派生于带有默认构造函数的基类"></a>该类派生于带有默认构造函数的基类</h2><p>基类有默认构造函数，说明基类需要被正确初始化，此时会通过生成默认构造函数或安插代码先调用基类的默认构造函数初始化基类部分，而后处理相应的类成员(如果有的话）。</p>
+<h2 id="存在虚函数的类"><a href="#存在虚函数的类" class="headerlink" title="存在虚函数的类"></a>存在虚函数的类</h2><p>原理同上，编译器生成相关代码初始化vptr和vprtable。</p>
+<h2 id="带有虚基类"><a href="#带有虚基类" class="headerlink" title="带有虚基类"></a>带有虚基类</h2><p>多重继承中的虚基类在子类对象中只保留一个，需要构造函数设置相应的虚基类对象指针。</p>
+<h2 id="拷贝构造函数"><a href="#拷贝构造函数" class="headerlink" title="拷贝构造函数"></a>拷贝构造函数</h2><p>拷贝构造也分为trivial和nontrivial，并且nontrivial才会被编译器真正合成。</p>
 <p>调用拷贝构造函数的情况：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">X</span>&#123;</span>&#125;;</span><br><span class="line">X x1 = X(); *<span class="comment">// 默认构造*</span></span><br><span class="line">X x2 = x1; *<span class="comment">// 拷贝构造*</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">foo</span><span class="params">(X x)</span></span>;</span><br><span class="line"><span class="function">X <span class="title">f</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">X tmp;</span><br><span class="line">foo(tmp); *<span class="comment">// 拷贝构造*</span></span><br><span class="line"><span class="keyword">return</span> tmp; *<span class="comment">// 拷贝构造函数返回值*</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="按位逐次拷贝"><a href="#按位逐次拷贝" class="headerlink" title="按位逐次拷贝"></a>按位逐次拷贝</h3><p>像C中的POD类型的数据一个bit一个bit的拷贝。如果拷贝构造函数是trivial那么就会按位逐次拷贝，并不会生成它。</p>
-<h3 id="拷贝构造函数合成时机-nontrivial"><a href="#拷贝构造函数合成时机-nontrivial" class="headerlink" title="拷贝构造函数合成时机(nontrivial)"></a>拷贝构造函数合成时机(nontrivial)</h3><ol>
+<h2 id="按位逐次拷贝"><a href="#按位逐次拷贝" class="headerlink" title="按位逐次拷贝"></a>按位逐次拷贝</h2><p>像C中的POD类型的数据一个bit一个bit的拷贝。如果拷贝构造函数是trivial那么就会按位逐次拷贝，并不会生成它。</p>
+<h2 id="拷贝构造函数合成时机-nontrivial"><a href="#拷贝构造函数合成时机-nontrivial" class="headerlink" title="拷贝构造函数合成时机(nontrivial)"></a>拷贝构造函数合成时机(nontrivial)</h2><ol>
 <li>一个类包含的某个成员设置了默认的拷贝构造函数。（调用成员的默认拷贝构造函数）</li>
 <li>一个类继承自一个含有默认拷贝构造函数的基类。（调用积累中的默认拷贝构造函数）</li>
 <li>一个类含有虚函数。（正确拷贝vptr）</li>
@@ -400,8 +400,8 @@
 <p><code>ZooAnimal z = b2;</code></p>
 <p>这里由于z不是引用或者指针，b2会被<strong>切割</strong>，而z的vptr不会被设置成Bear类的vptr，z的类型编译期就确定了是ZooAnimal，它的vptr还是指向ZooAnimal类的vtbl。这是编译器合成的拷贝构造需要做的工作。</p>
 <p><img src="https://img2020.cnblogs.com/blog/1557560/202012/1557560-20201202210530834-427379571.png"></p>
-<h3 id="虚基类子对象"><a href="#虚基类子对象" class="headerlink" title="虚基类子对象"></a>虚基类子对象</h3><p>编译器安插代码正确设置虚基类子对象的指针/偏移量的初值。</p>
-<h3 id="程序转化语义学"><a href="#程序转化语义学" class="headerlink" title="程序转化语义学"></a>程序转化语义学</h3><p>尽管可以用不同方式初始化一个对象，但都会在编译阶段被转化某种形式，例如：</p>
+<h2 id="虚基类子对象"><a href="#虚基类子对象" class="headerlink" title="虚基类子对象"></a>虚基类子对象</h2><p>编译器安插代码正确设置虚基类子对象的指针/偏移量的初值。</p>
+<h2 id="程序转化语义学"><a href="#程序转化语义学" class="headerlink" title="程序转化语义学"></a>程序转化语义学</h2><p>尽管可以用不同方式初始化一个对象，但都会在编译阶段被转化某种形式，例如：</p>
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">X</span>;</span></span><br><span class="line"><span class="function">X <span class="title">x0</span><span class="params">(paras)</span></span>;</span><br><span class="line"><span class="function">X <span class="title">x1</span><span class="params">(x0)</span></span>;</span><br><span class="line">X x2 = x0;</span><br><span class="line">X x3 = X(x0);</span><br><span class="line"></span><br><span class="line">会被编译器转化为：</span><br><span class="line">X x0;</span><br><span class="line">X x1;</span><br><span class="line">X x2;</span><br><span class="line">X x3;</span><br><span class="line">X0.X::X(paras); <span class="comment">// 构造函数</span></span><br><span class="line">x1.X::X(x0); <span class="comment">// 拷贝构造函数</span></span><br><span class="line">x2.X::X(x0); <span class="comment">// 拷贝构造函数</span></span><br><span class="line">X3.X::X(x0); <span class="comment">// 拷贝构造函数</span></span><br></pre></td></tr></table></figure>
 
 <p>从C++17开始, 标准规定了必须进行copy elision的情况:</p>
@@ -419,7 +419,7 @@
 <p><strong>注意</strong></p>
 <p><strong>只有当存在拷贝构造函数(不论是显式定义的还是编译器生成的)时, 编译器才有可能实施复制优化.</strong></p>
 <p>谨慎对待copy elision, 因为类设计者可能需要在拷贝/移动构造函数中进行某些特殊操作, 省略了之后可能带来难以调试的错误.</p>
-<h3 id="成员初始化列表"><a href="#成员初始化列表" class="headerlink" title="成员初始化列表"></a>成员初始化列表</h3><p>使用成员初始化列表的情况：</p>
+<h2 id="成员初始化列表"><a href="#成员初始化列表" class="headerlink" title="成员初始化列表"></a>成员初始化列表</h2><p>使用成员初始化列表的情况：</p>
 <ul>
 <li>初始化一个引用成员</li>
 <li>初始化一个const成员</li>
